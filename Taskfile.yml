@@ -1,0 +1,30 @@
+version: "3"
+
+vars:
+  RUNNER: ""
+  SOURCES: most main.py background.py
+  SOURCES_ROOT: most
+tasks:
+  lint:
+    desc: Lint python source files
+    cmds:
+      - "{{.RUNNER}} ruff check --fix {{.SOURCES}}"
+  format:
+    desc: Format python source files
+    aliases: ["fmt"]
+    cmds:
+      - "{{.RUNNER}} python -m ruff format {{.SOURCES}} "
+      - "{{.RUNNER}} python -m isort {{.SOURCES}}"
+  typecheck:
+    desc: Perform type-checking
+    cmd: "{{.RUNNER}} python -m mypy {{.SOURCES}}"
+  clean:
+    desc: Remove all __pycache__ dirs
+    cmd: "{{.RUNNER}} python -m pyclean ."
+
+  all:
+    desc: Run the standard set of checks performed in CI
+    cmds:
+      - task: format
+      - task: clean
+      - task: lint
