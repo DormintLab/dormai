@@ -2,8 +2,8 @@ version: "3"
 
 vars:
   RUNNER: ""
-  SOURCES: most main.py background.py
-  SOURCES_ROOT: most
+  SOURCES: dormai
+  SOURCES_ROOT: dormai
 tasks:
   lint:
     desc: Lint python source files
