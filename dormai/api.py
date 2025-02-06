@@ -81,13 +81,13 @@ class DormAI(object):
 
     def send_event(self, output: "DormAI.OutputData", context: "DormAI.ContextData"):
         resp = self.client.post(
-            f"https://agents.dormint.io/api/event/{self.pipe_id}",
+            f"https://api.agents.dormint.io/api/event/{self.pipe_id}",
             json={"data": output.model_dump(), "context": context.model_dump()},
         )
         resp.raise_for_status()
 
     def receive_event(self) -> Tuple["DormAI.InputData", "DormAI.ContextData"]:
-        resp = self.client.get(f"https://agents.dormint.io/api/event/{self.pipe_id}")
+        resp = self.client.get(f"https://api.agents.dormint.io/api/event/{self.pipe_id}")
         resp.raise_for_status()
         result = resp.json()
         return self.InputData.model_validate(
