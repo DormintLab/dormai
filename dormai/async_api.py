@@ -6,13 +6,14 @@ import httpx
 import yaml
 from pydantic import BaseModel, Field, create_model
 
+
 BaseModelChildType = TypeVar("BaseModelChildType", bound=BaseModel)
 
 
 class AsyncDormAI(object):
-    InputData: Type[BaseModelChildType]
-    OutputData: Type[BaseModelChildType]
-    ContextData: Type[BaseModelChildType]
+    InputData: Type[BaseModelChildType] = None
+    OutputData: Type[BaseModelChildType] = None
+    ContextData: Type[BaseModelChildType] = None
 
     def __init__(
         self,
@@ -79,11 +80,19 @@ class AsyncDormAI(object):
                 },
             )
 
+    async def __aenter__(self) -> "AsyncDormAI":
+        await self.client.__aenter__()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.client.__aexit__(exc_type, exc_val, exc_tb)
+
     async def send_event(
-        self, output: "AsyncDormAI.OutputData", context: "AsyncDormAI.ContextData"
+        self, output: "AsyncDormAI.OutputData",
+            context: "AsyncDormAI.ContextData"
     ):
         resp = await self.client.post(
-            f"https://agents.dormint.io/api/event/{self.pipe_id}",
+            f"https://api.agents.dormint.io/api/event/{self.pipe_id}",
             json={"data": output.model_dump(), "context": context.model_dump()},
         )
         resp.raise_for_status()
@@ -91,9 +100,11 @@ class AsyncDormAI(object):
     async def receive_event(
         self,
     ) -> Tuple["AsyncDormAI.InputData", "AsyncDormAI.ContextData"]:
-        resp = await self.client.get(f"https://agents.dormint.io/api/event/{self.pipe_id}")
+        resp = await self.client.get(f"https://api.agents.dormint.io/api/event/{self.pipe_id}")
         resp.raise_for_status()
         result = resp.json()
+        if result is None:
+            return None, None
         return self.InputData.model_validate(
             result["data"]
         ), self.ContextData.model_validate(result["context"])
