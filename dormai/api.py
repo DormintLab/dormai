@@ -55,6 +55,7 @@ class DormAI(object):
                         "INPUTS", {}
                     ).items()
                 },
+                extra='allow'
             )
 
         if DormAI.OutputData is None:
@@ -66,6 +67,7 @@ class DormAI(object):
                         "OUTPUTS", {}
                     ).items()
                 },
+                extra='allow'
             )
 
         if DormAI.ContextData is None:
@@ -77,6 +79,7 @@ class DormAI(object):
                         "CONTEXT", {}
                     ).items()
                 },
+                extra='allow'
             )
 
     def send_event(self, output: "DormAI.OutputData", context: "DormAI.ContextData"):

@@ -4,8 +4,7 @@ from typing import Optional, Tuple, Type, TypeVar
 
 import httpx
 import yaml
-from pydantic import BaseModel, Field, create_model
-
+from pydantic import BaseModel, Field, create_model, Extra
 
 BaseModelChildType = TypeVar("BaseModelChildType", bound=BaseModel)
 
@@ -56,6 +55,7 @@ class AsyncDormAI(object):
                         "INPUTS", {}
                     ).items()
                 },
+                extra='allow'
             )
 
         if AsyncDormAI.OutputData is None:
@@ -67,6 +67,7 @@ class AsyncDormAI(object):
                         "OUTPUTS", {}
                     ).items()
                 },
+                extra='allow'
             )
 
         if AsyncDormAI.ContextData is None:
@@ -78,6 +79,7 @@ class AsyncDormAI(object):
                         "CONTEXT", {}
                     ).items()
                 },
+                extra='allow'
             )
 
     async def __aenter__(self) -> "AsyncDormAI":
